@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Purchase One-Click Upsell Engine | D2C Growth Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .pulse-slow { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Top Portfolio Demonstration Bar -->
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Concept A</span>
+                <h1 class="text-sm font-bold text-white">Post-Purchase One-Click Upsell Engine</h1>
+            </div>
+            
+            <div class="flex items-center space-x-2 text-xs">
+                <span class="text-slate-400">Test Preset States:</span>
+                <button onclick="setTimer(300)" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-medium transition">Reset Timer (05:00)</button>
+                <button onclick="triggerState('accepted')" class="px-2.5 py-1 bg-emerald-600/80 hover:bg-emerald-600 rounded text-white font-medium transition">Simulate Accept</button>
+                <button onclick="triggerState('declined')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-medium transition">Simulate Decline</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Checkout Funnel Simulation (7 cols) -->
+        <section class="lg:col-span-7 space-y-6">
+            
+            <!-- Order Status Confirmation Banner -->
+            <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-emerald-400 font-semibold uppercase tracking-wide">Order #84920 Confirmed</p>
+                        <p class="text-sm font-medium text-slate-200">Main Order Charged: <span id="mainOrderTotal">$89.00</span></p>
+                    </div>
+                </div>
+                <span class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">Card Charged ✓</span>
+            </div>
+
+            <!-- The Post-Purchase Upsell Box -->
+            <div id="upsellCard" class="bg-slate-800 border-2 border-indigo-500/50 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                
+                <!-- Urgent Ribbon Header -->
+                <div class="bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-white text-center py-2 px-4 font-bold text-xs uppercase tracking-widest rounded-lg mb-6 shadow-lg flex items-center justify-center space-x-2">
+                    <i class="fas fa-bolt pulse-slow"></i>
+                    <span>Exclusive One-Time Offer • Expires In <span id="timer">05:00</span></span>
+                </div>
+
+                <div class="text-center space-y-2 mb-6">
+                    <h2 class="text-2xl font-extrabold text-white">Wait! Add This To Your Order With 1-Click</h2>
+                    <p class="text-sm text-slate-300">Because you purchased the <span class="text-indigo-400 font-semibold">AURA Hydration Kit</span>, get our Premium Silk Travel Pouch at 40% OFF.</p>
+                </div>
+
+                <!-- Product Showcase -->
+                <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-5">
+                    <div class="w-28 h-28 bg-slate-800 rounded-lg flex-shrink-0 flex items-center justify-center border border-slate-700">
+                        <i class="fas fa-box-open text-4xl text-indigo-400"></i>
+                    </div>
+                    <div class="flex-grow text-center sm:text-left">
+                        <div class="flex items-center justify-center sm:justify-start space-x-2">
+                            <span class="bg-rose-500/20 text-rose-400 text-xs font-bold px-2 py-0.5 rounded">SAVE 40%</span>
+                            <span class="text-xs text-slate-400">Special Add-On Rate</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-1">Waterproof Silk Travel Protection Pouch</h3>
+                        <p class="text-xs text-slate-400 mt-1">Keeps your skincare items safe & insulated during flight travel.</p>
+                        
+                        <div class="mt-3 flex items-baseline justify-center sm:justify-start space-x-2">
+                            <span class="text-2xl font-extrabold text-emerald-400" id="upsellPrice">$18.00</span>
+                            <span class="text-sm text-slate-500 line-through">$30.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action CTA Section -->
+                <div class="mt-6 space-y-3">
+                    <button id="acceptBtn" onclick="acceptUpsell()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-lg rounded-xl shadow-lg transition transform active:scale-[0.99] flex items-center justify-center space-x-2">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>YES! Add To My Order For $18.00</span>
+                    </button>
+                    <p class="text-center text-xs text-slate-400 flex items-center justify-center space-x-1">
+                        <i class="fas fa-lock text-slate-500"></i>
+                        <span>Charged instantly to Visa ending in •••• 4242. No re-entry needed.</span>
+                    </p>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button onclick="declineUpsell()" class="text-xs text-slate-400 hover:text-slate-200 underline font-medium">No thanks, I'll pass on this 40% discount</button>
+                </div>
+            </div>
+
+            <!-- Thank You Screen State (Hidden by default) -->
+            <div id="thankYouCard" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center space-y-4">
+                <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Order Complete!</h2>
+                <p class="text-sm text-slate-300">Your total has been updated. We are preparing your shipment.</p>
+                <div class="bg-slate-900 rounded-xl p-4 max-w-sm mx-auto text-left text-sm space-y-2 border border-slate-700">
+                    <div class="flex justify-between text-slate-400">
+                        <span>Original Order:</span>
+                        <span>$89.00</span>
+                    </div>
+                    <div id="upsellLineItem" class="flex justify-between text-emerald-400 font-medium">
+                        <span>Post-Purchase Pouch:</span>
+                        <span>+$18.00</span>
+                    </div>
+                    <div class="border-t border-slate-800 pt-2 flex justify-between font-bold text-white">
+                        <span>Final Total Charged:</span>
+                        <span id="finalOrderTotal">$107.00</span>
+                    </div>
+                </div>
+                <button onclick="resetDemo()" class="mt-4 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-bold rounded-lg text-slate-200">Reset Demo State</button>
+            </div>
+        </section>
+
+        <!-- Right Column: Consultant Strategy & ROI Case Study (5 cols) -->
+        <section class="lg:col-span-5 space-y-6">
+            <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 space-y-5">
+                <div class="flex items-center space-x-2 border-b border-slate-700 pb-3">
+                    <i class="fas fa-chart-line text-indigo-400"></i>
+                    <h3 class="font-bold text-white text-base">CRO Strategy & Business Value</h3>
+                </div>
+
+                <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
+                    <p><strong class="text-white">Why Post-Purchase Upsells Beat Standard Upsells:</strong> Standard cart upsells increase cart friction and drop-off risks before purchase. Post-purchase upsells occur <em>after</em> the primary transaction is secured, eliminating sales risk.</p>
+                    
+                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-2">
+                        <div class="font-bold text-slate-200">Client Revenue Lift Formula:</div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Take Rate Target:</span>
+                            <span class="text-emerald-400 font-semibold">12% - 18%</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>AOV Increase:</span>
+                            <span class="text-emerald-400 font-semibold">+$3.50 - $7.00 / order</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Added Risk to Main Sale:</span>
+                            <span class="text-emerald-400 font-semibold">0.0%</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <p class="font-bold text-white">Technical Implementation Spec:</p>
+                        <ul class="list-disc pl-4 space-y-1 text-slate-400">
+                            <li>Uses Shopify Post-Purchase Checkout Extensions API</li>
+                            <li>Vaulted payment token capture (Stripe / Shopify Payments)</li>
+                            <li>Zero re-entry of credit card or address information</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let timeLeft = 300;
+        let timerInterval;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    declineUpsell();
+                } else {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    document.getElementById('timer').innerText = 
+                        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function setTimer(seconds) {
+            timeLeft = seconds;
+            startTimer();
+        }
+
+        function acceptUpsell() {
+            clearInterval(timerInterval);
+            document.getElementById('upsellCard').classList.add('hidden');
+            document.getElementById('thankYouCard').classList.remove('hidden');
+            document.getElementById('upsellLineItem').classList.remove('hidden');
+            document.getElementById('finalOrderTotal').innerText = '$107.00';
+        }
+
+        function declineUpsell() {
+            clearInterval(timerInterval);
+            document.getElementById('upsellCard').classList.add('hidden');
+            document.getElementById('thankYouCard').classList.remove('hidden');
+            document.getElementById('upsellLineItem').classList.add('hidden');
+            document.getElementById('finalOrderTotal').innerText = '$89.00';
+        }
+
+        function triggerState(state) {
+            if (state === 'accepted') acceptUpsell();
+            if (state === 'declined') declineUpsell();
+        }
+
+        function resetDemo() {
+            document.getElementById('thankYouCard').classList.add('hidden');
+            document.getElementById('upsellCard').classList.remove('hidden');
+            setTimer(300);
+        }
+
+        // Initialize Timer
+        startTimer();
+    </script>
+</body>
+</html>
